@@ -1,0 +1,4 @@
+BETTER_AUTH_SECRET=NB0b9Mgd9E44ZcQ5aSNUI75EkDWhEApS
+
+BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app
+
