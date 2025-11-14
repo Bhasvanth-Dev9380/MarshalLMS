@@ -226,7 +226,12 @@ export default function CourseCreationPage() {
                       Duration (hours)
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Duration " type="number"{...field} />
+                      <Input
+                        type="number"
+                        placeholder="Duration"
+                        value={field.value?.toString() ?? ""}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -238,7 +243,12 @@ export default function CourseCreationPage() {
                       pricr ($)
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="price " type="number"{...field} />
+                      <Input
+                        type="number"
+                        placeholder="Price"
+                        value={field.value?.toString() ?? ""}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,11 +1,16 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/lib/types";
 import { courseSchema, CourseSchemaType } from "@/lib/zodSchema";
+import { headers } from "next/headers";
 
 export async function CreateCourse(values: CourseSchemaType): Promise<ApiResponse> {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    })
     const validation = courseSchema.safeParse(values);
 
     // FIXED → fail when validation FAILS
@@ -20,7 +25,7 @@ export async function CreateCourse(values: CourseSchemaType): Promise<ApiRespons
     const data = await prisma.course.create({
       data: {
         ...validation.data,
-        userId: "sam",
+        userId: session?.user.id as string,
       },
     });
 
@@ -28,8 +33,10 @@ export async function CreateCourse(values: CourseSchemaType): Promise<ApiRespons
       status: "success",
       message: "Course created successfully",
     };
-  } catch (error) {
-    console.error("Error creating course", error);
+  } catch {
+    console.log("Incoming course values:", values);
+
+
     return {
       status: "error",
       message: "Failed to create course",
