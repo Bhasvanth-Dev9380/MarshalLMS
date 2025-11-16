@@ -16,12 +16,13 @@ export default async function EditRoute({ params }: { params: Params }) {
         Edit Course: {" "}
         <span className="text-primary underline">{data.title}</span>
       </h1>
-      <Tabs defaultValue=" basic-info" className="w-full">
+
+      <Tabs defaultValue="basic-info" className="w-full">
         <TabsList className="grid grid-cols-2 w-full">
           <TabsTrigger value="basic-info">Basic Info</TabsTrigger>
           <TabsTrigger value="Course-Structure">Course Structure</TabsTrigger>
         </TabsList>
-        <TabsContent value="basic-info">
+        <TabsContent value="basic-info" className="mt-2">
           <Card>
             <CardHeader>
               <CardTitle>Basic info</CardTitle>
@@ -33,7 +34,7 @@ export default async function EditRoute({ params }: { params: Params }) {
 
           </Card>
         </TabsContent>
-        <TabsContent value="Course-Structure">
+        <TabsContent value="Course-Structure" className="mt-2">
           <Card>
             <CardHeader>
               <CardTitle>Course-Structure</CardTitle>
