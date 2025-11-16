@@ -6,6 +6,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { s3 } from '@/lib/S3Client';
 import { env } from '@/lib/env';
+import arcjet, { detectBot, fixedWindow } from '@/lib/arcjet';
+import { User } from 'lucide-react';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
+import { error } from 'console';
+import { requireAdmin } from '@/app/data/admin/require-Admin';
 
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, { message: "fileName is requried" }),
@@ -15,14 +21,47 @@ export const fileUploadSchema = z.object({
 
 });
 
+const aj = arcjet.withRule(
+  detectBot({
+    mode: "LIVE",
+    allow: [],
+  })
+)
+  .withRule(
+    fixedWindow({
+      mode: "LIVE",
+      window: "1m",
+      max: 5,
+    })
+  );
+
+
 
 export async function POST(request: Request) {
+  const session = await requireAdmin();
+
+
+  // const session = await auth.api.getSession({
+  //   headers: await headers(),
+  // });
+
+
   try {
+
+    const decision = await aj.protect(request, {
+      Fingerprint: session?.user.id as string,
+    });
+
+    if (decision.isDenied()) {
+      return NextResponse.json({ error: "dudde not good" }, { status: 429 });
+    }
+
     const body = await request.json();
 
     const validation = fileUploadSchema.safeParse(body);
 
     if (!validation.success) {
+
       return NextResponse.json({ error: "Invalid Request Bodt" },
         { status: 400 }
       )

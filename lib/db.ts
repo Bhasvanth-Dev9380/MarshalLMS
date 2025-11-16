@@ -9,7 +9,7 @@
 // if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 // lib/db.ts
-import "server-only";
+
 
 import { PrismaClient } from "@prisma/client";
 

@@ -1,4 +1,4 @@
-import "server-only";
+
 
 import { env } from "./env";
 import { Resend } from "resend";

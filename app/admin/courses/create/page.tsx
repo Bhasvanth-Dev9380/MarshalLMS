@@ -55,11 +55,11 @@ export default function CourseCreationPage() {
 
       if (result.status === "success") {
         toast.success(result.message);
+        form.reset()
+        router.push("/admin/courses")
 
       } else if (result.status === "error") {
         toast.success(result.message);
-        form.reset()
-        router.push("/admin/courses")
       }
     });
 
