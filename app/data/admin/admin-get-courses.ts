@@ -11,6 +11,8 @@ export async function adminGetCourses() {
     select: {
       id: true,
       title: true,
+      description: true,
+      category: true,
       smallDescription: true,
       duration: true,
       level: true,
@@ -24,6 +26,6 @@ export async function adminGetCourses() {
   return data;
 }
 
-export type AdminCourseType = Awaited<ReturnType<typeof adminGetCourses>>[0];
 
+export type AdminCourseType = Awaited<ReturnType<typeof adminGetCourses>>[0];
 

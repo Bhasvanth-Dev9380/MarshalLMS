@@ -1,7 +1,0 @@
-"use client";
-
-export function EditCourseForm() {
-  return (
-    <h1>Edit Course </h1>
-  );
-}

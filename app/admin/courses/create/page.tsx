@@ -24,24 +24,23 @@ import { useRouter } from "next/navigation";
 
 export default function CourseCreationPage() {
   const [pending, startTransition] = useTransition();
-  const router = useRouter()
+  const router = useRouter();
 
-  const form = useForm<CourseSchemaType>(
-    {
-      resolver: zodResolver(courseSchema),
-      defaultValues: {
-        title: "",
-        description: "",
-        fileKey: "",
-        price: 0,
-        duration: 0,
-        level: "Beginner",
-        category: "Health & fitness",
-        smallDescription: "",
-        slug: "",
-        status: "Draft",
-      }
+  const form = useForm<CourseSchemaType>({
+    resolver: zodResolver(courseSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      fileKey: "",
+      price: 0,
+      duration: 0,
+      level: "Beginner",
+      category: "Health & fitness",
+      smallDescription: "",
+      slug: "",
+      status: "Draft",
     }
+  }
   );
 
   function onSubmit(values: CourseSchemaType) {
