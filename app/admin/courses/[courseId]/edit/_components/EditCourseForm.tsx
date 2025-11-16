@@ -19,7 +19,7 @@ import { tryCatch } from "@/hooks/try-catch";
 // import { CreateCourse } from "./actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { editCourse } from "../action";
+import { editCourse } from "./action";
 import { AdminCourseTypeSingularType } from "@/app/data/admin/admin-get-courses";
 
 

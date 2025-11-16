@@ -1,4 +1,4 @@
-import { AdminCourseType } from "@/app/data/admin/admin-get-courses";
+import { AdminCourseTypeSingularType } from "@/app/data/admin/admin-get-courses";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -10,7 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface iApprops {
-  data: AdminCourseType;
+  data: AdminCourseTypeSingularType;
 }
 
 export function AdminCourseCard({ data }: iApprops) {
