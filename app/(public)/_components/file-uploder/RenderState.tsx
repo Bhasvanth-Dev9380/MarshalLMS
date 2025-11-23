@@ -53,14 +53,27 @@ export function RenderUploadState({
   isDeleting: boolean;
   handleRemoveFile: () => void;
 }) {
+  const isSvg = previewUrl.toLowerCase().includes(".svg");
+
   return (
     <div className="relative w-full h-full">
-      <Image
-        src={previewUrl}
-        alt="Uploaded File"
-        fill
-        className="object-contain p-2"
-      />
+      {isSvg ? (
+        // Use native img for SVG to avoid Next.js SVG restrictions
+        <img
+          src={previewUrl}
+          alt="Uploaded File"
+          className="object-contain p-2 w-full h-full"
+        />
+      ) : (
+        <Image
+          src={previewUrl}
+          alt="Uploaded File"
+          fill
+          className="object-contain p-2"
+          // optional: you can add unoptimized if you want to bypass optimization
+          // unoptimized
+        />
+      )}
 
       <Button
         variant="destructive"
@@ -78,6 +91,7 @@ export function RenderUploadState({
     </div>
   );
 }
+
 
 export function RenderUploadingState({
   progress,

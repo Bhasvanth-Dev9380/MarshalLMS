@@ -160,60 +160,86 @@ export function Uploader({ value, onChange }: iAppProps) {
   // Delete File
   // ---------------------------
   const handleRemoveFile = useCallback(async () => {
-    if (fileState.isDeleting || !fileState.objectUrl) return;
+  // ❌ No key? → Reset state & allow new upload
+  if (!fileState.key) {
+    console.warn("No key found. Resetting uploader state.");
 
-    try {
-      setFileState((prev) => ({
-        ...prev,
-        isDeleting: true,
-      }));
+    // Reset state to allow new upload
+    onChange?.(""); // remove value from form if needed
+    setFileState({
+      file: null,
+      uploading: false,
+      progress: 0,
+      objectUrl: undefined,
+      error: false,
+      fileType: "image",
+      id: null,
+      isDeleting: false,
+      key: undefined,
+    });
 
-      const response = await fetch("/api/s3/delete", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          key: fileState.key,
-        }),
-      });
+    toast.success("File cleared. Upload a new one.");
+    return; // ⛔ Stop here — skip API call
+  }
 
-      if (!response.ok) {
-        toast.error("Failed to remove file from storage");
-        setFileState((prev) => ({
-          ...prev,
-          isDeleting: false,
-          error: true,
-        }));
-        return;
-      }
+  // 🧹 KEY EXISTS → Try deleting on S3
+  try {
+    setFileState((prev) => ({ ...prev, isDeleting: true }));
 
-      if (fileState.objectUrl && !fileState.objectUrl.startsWith("http")) {
-        URL.revokeObjectURL(fileState.objectUrl);
-      }
+    const response = await fetch("/api/s3/delete", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: fileState.key }),
+    });
 
-      onChange?.("");
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Delete API error:", response.status, text);
 
-      setFileState({
-        file: null,
-        uploading: false,
-        progress: 0,
-        objectUrl: undefined,
-        error: false,
-        fileType: "image",
-        id: null,
-        isDeleting: false,
-        key: undefined,
-      });
-
-      toast.success("File removed successfully");
-    } catch (error) {
-      toast.error("Error removing file. Please try again.");
+      toast.error("Failed to remove file from storage");
       setFileState((prev) => ({
         ...prev,
         isDeleting: false,
         error: true,
       }));
+      return;
     }
-  }, [fileState, onChange]);
+
+    // 🧹 Cleanup local blob URL
+    if (
+      fileState.objectUrl &&
+      !fileState.objectUrl.startsWith("http")
+    ) {
+      URL.revokeObjectURL(fileState.objectUrl);
+    }
+
+    // Reset state after success
+    onChange?.("");
+    setFileState({
+      file: null,
+      uploading: false,
+      progress: 0,
+      objectUrl: undefined,
+      error: false,
+      fileType: "image",
+      id: null,
+      isDeleting: false,
+      key: undefined,
+    });
+
+    toast.success("File removed successfully");
+  } catch (error) {
+    console.error("Delete request error:", error);
+
+    toast.error("Error removing file. Please try again.");
+    setFileState((prev) => ({
+      ...prev,
+      isDeleting: false,
+      error: true,
+    }));
+  }
+}, [fileState, onChange]);
+
 
   // ---------------------------
   // Dropzone Setup (FIXED)

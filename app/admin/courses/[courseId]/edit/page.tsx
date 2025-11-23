@@ -41,7 +41,7 @@ export default async function EditRoute({ params }: { params: Params }) {
               <CardDescription>Hear you can update your course Structure</CardDescription>
             </CardHeader>
             <CardContent>
-              <CourseStructure />
+              <CourseStructure  data={data}/>
             </CardContent>
 
           </Card>
