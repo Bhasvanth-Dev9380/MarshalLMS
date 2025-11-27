@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/lib/types";
 import { courseSchema, CourseSchemaType } from "@/lib/zodSchema";
 import arcjet, { detectBot, fixedWindow, request } from "@arcjet/next";
+import { revalidatePath } from "next/cache";
 
 const ajClient = arcjet({
   key: process.env.ARCJET_KEY!,
@@ -82,3 +83,80 @@ export async function editCourse(
     };
   }
 }
+
+export async function reorderLesson(
+chapterId:string,
+lessons:{
+  position: any;id:string;order:number
+}[],
+courseId:string
+):Promise<ApiResponse>{
+  try{
+if(!lessons||lessons.length===0){
+return{
+  status:"error",
+  message:"No lessons provided for reorder"
+};
+}
+const updates=lessons.map((lesson)=>prisma.lesson.update({
+  where:{id:lesson.id,chapterId:chapterId},
+  data:{
+    position:lesson.position,
+  },
+})
+);
+await prisma.$transaction(updates);
+revalidatePath('/admin/courses/[courseId]/edit');
+
+return{
+  status:"success",
+  message:"Lessons reordered successfully",
+}
+  } catch{
+return{
+  status: "error",
+  message: "Failed to reorder lessons",
+}
+  }
+}
+
+export async function reorderChapter(courseId:string, chapter:{id:string; position: number}[]
+)
+
+:Promise<ApiResponse>{
+  await requireAdmin();
+  try{
+    if(!chapter||chapter.length===0){
+      return{
+        status:"error",
+        message:"No chapters provided for reorder"
+      };
+    }
+      
+   const updates=chapter.map((chapter)=>
+    prisma.chapter.update({
+    where:{id:chapter.id,courseId:courseId},
+    data:{
+      position:chapter.position,
+    }
+   }) ) ;
+
+    await prisma.$transaction(updates);
+
+    revalidatePath('/admin/courses/[courseId]/edit');
+
+    return{
+      status:"success",
+      message:"Chapters reordered successfully",
+    };
+  }catch{
+    return{
+      status: "error",
+      message: "Failed to reorder chapters",
+    }
+  }
+}
+
+
+
+
