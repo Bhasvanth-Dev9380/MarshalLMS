@@ -39,6 +39,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
 import { reorderLesson, reorderChapter } from "./_components/action";
+import { NewChapterModal } from "./_components/NewChapterModal";
+import { NewLessonModal } from "./_components/NewLessonModal";
+import { DeleteLesson } from "./_components/DeleteLesson";
 
 interface SortableItemProps {
   id: string | number;
@@ -328,6 +331,7 @@ export function CourseStructure({ data }: iAppProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between border-b border-border">
           <CardTitle>Chapters</CardTitle>
+          <NewChapterModal  courseId={data.id}/>
         </CardHeader>
         <CardContent className="space-y-8">
           <SortableContext
@@ -410,14 +414,27 @@ export function CourseStructure({ data }: iAppProps) {
                                       >
                                         <GripVertical className="size-4" />
                                       </Button>
-                                      <FileText className="size-4" />
-                                      <Link
-                                        href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
-                                        className="flex items-center gap-1 hover:text-primary"
-                                      >
-                                        <LinkIcon className="size-3" />
-                                        <span>{lesson.title}</span>
-                                      </Link>
+                                    <FileText className="size-4" />
+                                    <Link
+                                      href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
+                                      className="flex items-center gap-1 hover:text-primary"
+                                    >
+                                      <LinkIcon className="size-3" />
+                                      <span>{lesson.title}</span>
+                                    </Link>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() =>
+                                        DeleteLesson({
+                                          chapterId: String(item.id),
+                                          courseId: String(data.id),
+                                          lessonId: String(lesson.id),
+                                        })
+                                      }
+                                    >
+                                      <Trash2 className="size-4" />
+                                    </Button>
                                     </div>
                                     <Button variant="outline" size="icon">
                                       <Trash2 className="size-4" />
@@ -431,13 +448,7 @@ export function CourseStructure({ data }: iAppProps) {
 
                         {/* FULL-WIDTH CREATE BUTTON AT BOTTOM */}
                         <div className="border-t">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full justify-center rounded-none"
-                          >
-                            Create New Lesson
-                          </Button>
+                          <NewLessonModal chapterId={String(item.id)} courseId={String(data.id)}/>
                         </div>
                       </CollapsibleContent>
                     </Collapsible>

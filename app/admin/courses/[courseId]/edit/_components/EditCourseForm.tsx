@@ -5,7 +5,7 @@ import { Loader2, PlusIcon, SparkleIcon } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,7 +32,7 @@ export function EditCourseForm({ data }: iApprops) {
   const router = useRouter();
 
   const form = useForm<CourseSchemaType>({
-    resolver: zodResolver(courseSchema),
+    resolver: zodResolver(courseSchema) as Resolver<CourseSchemaType>,
     defaultValues: {
       title: data.title,
       description: data.description,
@@ -46,6 +46,9 @@ export function EditCourseForm({ data }: iApprops) {
       status: "Draft",
     }
   });
+
+  // cast control to a single non-conflicting type to avoid duplicate react-hook-form type issues
+  const control: any = form.control;
 
   function onSubmit(values: CourseSchemaType) {
     startTransition(async () => {
@@ -75,7 +78,7 @@ export function EditCourseForm({ data }: iApprops) {
     <Form {...form}>
       <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
 
-        <FormField control={form.control} name="title" render={({ field }) => (
+        <FormField control={control} name="title" render={({ field }) => (
           <FormItem>
             <FormLabel>
               Title
@@ -87,7 +90,7 @@ export function EditCourseForm({ data }: iApprops) {
           </FormItem>
         )} />
         <div className="flex gap-4 items-end">
-          <FormField control={form.control} name="slug" render={({ field }) => (
+          <FormField control={control} name="slug" render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>
                 Slug
@@ -111,7 +114,7 @@ export function EditCourseForm({ data }: iApprops) {
             generate Slug <SparkleIcon className="ml-1" size={16} />
           </Button>
         </div>
-        <FormField control={form.control} name="smallDescription" render={({ field }) => (
+        <FormField control={control} name="smallDescription" render={({ field }) => (
           <FormItem>
             <FormLabel>
               smallDescription
@@ -123,7 +126,7 @@ export function EditCourseForm({ data }: iApprops) {
           </FormItem>
         )} />
         <FormField
-          control={form.control}
+          control={control}
           name="description"
           render={({ field }) => (
             <FormItem>
@@ -139,7 +142,7 @@ export function EditCourseForm({ data }: iApprops) {
         />
 
 
-        <FormField control={form.control} name="fileKey" render={({ field }) => (
+        <FormField control={control} name="fileKey" render={({ field }) => (
           <FormItem>
             <FormLabel>
               Thumbnail image
@@ -153,7 +156,7 @@ export function EditCourseForm({ data }: iApprops) {
         )} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <FormField control={form.control} name="category" render={({ field }) => (
+          <FormField control={control} name="category" render={({ field }) => (
             <FormItem>
               <FormLabel>
                 category
@@ -180,7 +183,7 @@ export function EditCourseForm({ data }: iApprops) {
             </FormItem>
           )} />
 
-          <FormField control={form.control} name="level" render={({ field }) => (
+          <FormField control={control} name="level" render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>
                 level
@@ -206,7 +209,7 @@ export function EditCourseForm({ data }: iApprops) {
               <FormMessage />
             </FormItem>
           )} />
-          <FormField control={form.control} name="duration" render={({ field }) => (
+          <FormField control={control} name="duration" render={({ field }) => (
             <FormItem>
               <FormLabel>
                 Duration (hours)
@@ -223,7 +226,7 @@ export function EditCourseForm({ data }: iApprops) {
             </FormItem>
           )} />
 
-          <FormField control={form.control} name="price" render={({ field }) => (
+          <FormField control={control} name="price" render={({ field }) => (
             <FormItem>
               <FormLabel>
                 pricr ($)
@@ -241,7 +244,7 @@ export function EditCourseForm({ data }: iApprops) {
           )} />
 
         </div>
-        <FormField control={form.control} name="status" render={({ field }) => (
+        <FormField control={control} name="status" render={({ field }) => (
           <FormItem className="w-full">
             <FormLabel>
               status

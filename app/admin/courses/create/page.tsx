@@ -7,7 +7,7 @@ import Link from "next/link";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,7 +27,7 @@ export default function CourseCreationPage() {
   const router = useRouter();
 
   const form = useForm<CourseSchemaType>({
-    resolver: zodResolver(courseSchema),
+    resolver: zodResolver(courseSchema) as unknown as Resolver<CourseSchemaType>,
     defaultValues: {
       title: "",
       description: "",
